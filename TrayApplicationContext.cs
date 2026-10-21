@@ -30,7 +30,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             Icon = _icon,
             Visible = true,
-            Text = "鼠标手势：按住右键下滑 Ctrl+Home，上滑 Ctrl+End",
+            Text = "鼠标手势：按住右键上滑 Ctrl+Home，下滑 Ctrl+End",
             ContextMenuStrip = menu
         };
         _tray.DoubleClick += (_, _) => enable.PerformClick();
