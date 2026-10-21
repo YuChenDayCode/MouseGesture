@@ -49,11 +49,12 @@ internal sealed class MouseGestureHook : IDisposable
         if (nCode < 0) return Pass();
 
         var m = *(MSLLHOOKSTRUCT*)lParam;
-        if (Native.IsInjected(in m) || !Enabled) return Pass();
+        if (Native.IsInjected(in m)) return Pass();
 
         switch (wParam.ToInt32())
         {
             case Native.WM_RBUTTONDOWN:
+                if (!Enabled) return Pass();
                 _down = true;
                 _x0 = m.pt.X;
                 _y0 = m.pt.Y;
@@ -61,6 +62,8 @@ internal sealed class MouseGestureHook : IDisposable
 
             case Native.WM_RBUTTONUP:
             case Native.WM_RBUTTONDBLCLK:
+                // 不看 Enabled：按下时已被吞掉，按住期间关闭手势也要配对处理松开，
+                // 否则 _down 会卡住，且目标程序会收到一个没有按下的右键松开。
                 if (!_down) return Pass();
                 _down = false;
                 Recognize(m.pt.X, m.pt.Y);
